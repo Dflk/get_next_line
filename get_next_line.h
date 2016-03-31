@@ -6,7 +6,7 @@
 /*   By: rbaran <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/02 14:22:50 by rbaran            #+#    #+#             */
-/*   Updated: 2016/03/15 09:20:50 by rbaran           ###   ########.fr       */
+/*   Updated: 2016/03/31 18:59:28 by rbaran           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,15 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <libft.h>
-# define BUF_SIZE 4096
-# define FILES 256
+# define BUF_SIZE 128
+
+typedef struct	s_fd
+{
+	int			fd;
+	char		*line;
+	char		*begin_line;
+	struct s_fd	*next;
+}				t_fd;
 
 int				get_next_line(int const fd, char **line);
 
