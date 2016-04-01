@@ -6,12 +6,11 @@
 /*   By: rbaran <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/03 15:00:20 by rbaran            #+#    #+#             */
-/*   Updated: 2016/04/01 12:26:18 by rbaran           ###   ########.fr       */
+/*   Updated: 2016/04/01 12:28:21 by rbaran           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
 
 static t_fd	*ft_checkfiles(int fd, t_fd *files)
 {
