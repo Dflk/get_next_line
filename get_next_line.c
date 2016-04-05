@@ -6,7 +6,7 @@
 /*   By: rbaran <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/03 15:00:20 by rbaran            #+#    #+#             */
-/*   Updated: 2016/04/01 12:28:21 by rbaran           ###   ########.fr       */
+/*   Updated: 2016/04/05 09:24:49 by rbaran           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,6 @@ static t_fd	*ft_checkfiles(int fd, t_fd *files)
 	begin_files = files;
 	if (files)
 	{
-		if (files->fd == fd)
-			return (files);
 		while (files->fd != fd && files->next->fd != begin_files->fd)
 		{
 			if (files->fd == fd)
