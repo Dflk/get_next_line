@@ -6,7 +6,7 @@
 /*   By: rbaran <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/03/03 15:00:20 by rbaran            #+#    #+#             */
-/*   Updated: 2016/04/05 09:24:49 by rbaran           ###   ########.fr       */
+/*   Updated: 2016/04/15 10:05:57 by rbaran           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static t_fd	*ft_checkfiles(int fd, t_fd *files)
 	begin_files = files;
 	if (files)
 	{
-		while (files->fd != fd && files->next->fd != begin_files->fd)
+		while (files->next->fd != begin_files->fd)
 		{
 			if (files->fd == fd)
 				return (files);
@@ -39,7 +39,7 @@ static t_fd	*ft_createfile(char *buf, int fd, t_fd *files)
 	if ((file = (t_fd*)ft_memalloc(sizeof(t_fd))))
 	{
 		file->line = ft_strdup(buf);
-		file->begin_line = file->line;
+		file->start = 0;
 		file->fd = fd;
 		if (!files)
 			file->next = file;
@@ -57,6 +57,7 @@ static int	ft_checkbuf(char *buf, t_fd **files, int fd)
 {
 	int		i;
 	int		res;
+	char	*str_buf;
 	t_fd	*file;
 
 	i = 0;
@@ -70,43 +71,44 @@ static int	ft_checkbuf(char *buf, t_fd **files, int fd)
 	else
 	{
 		file = ft_checkfiles(fd, *files);
+		str_buf = file->line;
 		file->line = ft_strjoin(file->line, buf);
-		free(file->begin_line);
-		file->begin_line = file->line;
+		free(str_buf);
 	}
 	return (res);
 }
 
 static void	ft_fill_line(t_fd *file, char **line, int fd, t_fd **files)
 {
-	int		i;
+	size_t	i;
 	t_fd	*file_buf;
 
-	i = 0;
-	*line = file->line;
+	i = file->start;
 	while (file->line[i] != '\0' && file->line[i] != '\n')
 		i++;
-	file->line = (file->line) + i;
-	if (*(file->line) == '\n')
-	{
-		*(file->line) = '\0';
-		file->line = (file->line) + 1;
-	}
-	if (*(file->line) == 0)
+	*line = ft_strsub(file->line, file->start, i - file->start);
+	file->start = i;
+	if (file->line[i] == '\n')
+		file->start++;
+	if (file->line[file->start] == 0)
 	{
 		file_buf = file;
-		while (file->next->fd != fd)
-			file = file->next;
 		if (file->fd == file->next->fd)
 			*files = NULL;
+		else
+			while (file->next->fd != fd)
+				file = file->next;
 		file->next = file->next->next;
+		if ((*files) && (*files)->fd == file_buf->fd)
+			*files = (*files)->next;
+		free(file_buf->line);
 		free(file_buf);
 	}
 }
 
 int			get_next_line(int const fd, char **line)
 {
-	char		buf[BUF_SIZE + 1];
+	char		buf[BUFF_SIZE + 1];
 	int			ret;
 	int			res;
 	static t_fd	*files = NULL;
@@ -114,7 +116,7 @@ int			get_next_line(int const fd, char **line)
 	res = -1;
 	if (fd < 0 || fd == 1 || fd == 2 || !line)
 		return (-1);
-	ret = read(fd, buf, BUF_SIZE);
+	ret = read(fd, buf, BUFF_SIZE);
 	if (ret == -1 || (ret == 0 && (!ft_checkfiles(fd, files))))
 		return (ret);
 	buf[ret] = '\0';
